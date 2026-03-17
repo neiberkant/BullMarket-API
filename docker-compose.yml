@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  finanzas_api:
+    build: .
+    # Monta el archivo .env para que sea leÃ­do por la aplicaciÃ³n
+    env_file:
+      - .env
+
+    ports:
+      - "5003:8003" # Make sure this mapping uses the external port
+    volumes:
+      # Monta el directorio de datos local en el contenedor
+      # Esto permite persistir los reportes y audios generados
+      - ./data:/app/data
+      # Monta el código fuente de app para tomar cambios de Python en vivo (Hot-Reload)
+      - ./app:/app/app
+      # AsegÃºrate de que el path en .env (GOOGLE_API_CREDENTIALS_PATH) coincida con el destino en el contenedor
+      # Descomentar si usas credenciales.json
+      # - ./google_credentials.json:/app/google_credentials.json:ro
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      #- PYTHONUNBUFFERED: 1 # Para ver logs en tiempo real
+    # network_mode: "host" # Ãštil si Evolution API corre en localhost en tu mÃ¡quina
+    # depends_on:
+    #   - evolution_api # Si Evolution API corre en otro contenedor en el mismo docker-compose
+
+    restart: unless-stopped
+    networks: # <-- ¡AÑADIR RED EXPLÍCITA AL SERVICIO!
+      - finanzas_network 
+
+networks: # <-- ¡AÑADIR SECCIÓN DE REDES!
+  finanzas_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.16.0.0/24 # Usamos la siguiente subred libre
+
+

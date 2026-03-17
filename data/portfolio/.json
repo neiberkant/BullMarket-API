@@ -1,0 +1,12 @@
+{
+    "cash_disponible_ars": 300000.00,
+    "cash_disponible_usd": 50.0,
+    "posiciones": [
+        {
+        }
+    ],
+    "realized_pnl": {
+        "ars": 0.0,
+        "usd": 0.0
+    }
+}

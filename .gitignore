@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+workspace/
+
+# Environment
+.env
+
+# Data and Temp
+/data/temp/
+/data/scraped_reports/
+/data/audio_reports/
+/data/portfolio/PORTAFOLIO_ACTUAL.json
+*.pdf
+*.mp3
+
+# Project Specific
+/versiones/
+/MANUAL/*
+!/MANUAL/fuentes de info.txt
+gravity.md
+
+# OS
+.DS_Store
+Thumbs.db

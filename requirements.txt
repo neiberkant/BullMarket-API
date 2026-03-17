@@ -1,0 +1,40 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-dotenv
+
+# Para Web Scraping con Playwright
+playwright
+
+
+# Para Google Sheets/Drive API
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+
+
+# Para Gemini API
+google-generativeai>=0.7.0 # Usar una versión estable reciente
+
+
+# Para manejar archivos PDF (unir)
+pypdf
+# Para extracción de texto de PDF (fitz proviene de PyMuPDF)
+pymupdf
+
+# Para generar PDFs (FPDF2)
+fpdf2
+
+# Para peticiones HTTP (usado en download_pdf_direct y communication_service)
+requests
+httpx
+
+python-multipart  # <-- DEPENDENCIA AÑADIDA Y CRÍTICA
+
+
+# Para validación de email (requerido por Pydantic EmailStr)
+email-validator # <-- AÑADIDO DE NUEVO
+
+# Para convertir texto a audio
+gtts

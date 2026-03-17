@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Assistant API - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar glass-effect">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h2>Trading API</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#portfolio" class="nav-item active" data-target="dashboard">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Dashboard
+                </a>
+                <a href="#analysis" class="nav-item" data-target="tactical">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    Gestión Táctica
+                </a>
+                <a href="#settings" class="nav-item" data-target="scrapers">
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    Scrapers
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Dev: <strong>Neiber Kant</strong></p>
+                <div class="status-indicator">
+                    <div class="dot active"></div>
+                    <span>API Online</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="topbar">
+                <div class="header-titles">
+                    <h1>Resumen de Portafolio</h1>
+                    <p class="subtitle" id="currentDate">Cargando...</p>
+                </div>
+                
+                <div class="otp-alert-container" id="otpAlertContainer" style="display: none;">
+                    <!-- OTP Alerts will be injected here -->
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <div id="view-dashboard" class="view active-view">
+                <div class="cards-grid">
+                    <!-- ARS Balance -->
+                    <div class="metric-card glass-effect relative overflow-hidden">
+                        <div class="metric-icon blue">
+                            <span>$</span>
+                        </div>
+                        <div class="metric-info">
+                            <h3>Liquidez ARS</h3>
+                            <h2 id="cashArs">Cargando...</h2>
+                        </div>
+                    </div>
+                    
+                    <!-- USD Balance -->
+                    <div class="metric-card glass-effect relative overflow-hidden">
+                        <div class="metric-icon green">
+                            <span>U$S</span>
+                        </div>
+                        <div class="metric-info">
+                            <h3>Liquidez USD</h3>
+                            <h2 id="cashUsd">Cargando...</h2>
+                        </div>
+                    </div>
+
+                    <!-- Unrealized P&L ARS -->
+                    <div class="metric-card glass-effect">
+                        <div class="metric-icon purple">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+                        </div>
+                        <div class="metric-info">
+                            <h3>Realized P&L (ARS)</h3>
+                            <h2 id="pnlArs" class="neutral">Cargando...</h2>
+                        </div>
+                    </div>
+                    
+                    <!-- Unrealized P&L USD -->
+                    <div class="metric-card glass-effect">
+                        <div class="metric-icon purple">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+                        </div>
+                        <div class="metric-info">
+                            <h3>Realized P&L (USD)</h3>
+                            <h2 id="pnlUsd" class="neutral">Cargando...</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Posiciones Abiertas</h2>
+                        <button class="btn-primary" onclick="refreshPortfolio()">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                            Actualizar
+                        </button>
+                    </div>
+                    <div class="table-container glass-effect">
+                        <table id="positionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Activo</th>
+                                    <th>Ticker</th>
+                                    <th>Moneda</th>
+                                    <th>Cant. / Nominal</th>
+                                    <th>Px Compra</th>
+                                    <th>Monto Invertido</th>
+                                </tr>
+                            </thead>
+                            <tbody id="positionsBody">
+                                <tr><td colspan="6" class="text-center">Cargando posiciones...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tactical Analysis View -->
+            <div id="view-tactical" class="view" style="display: none;">
+                <div class="content-section">
+                    <div class="section-header">
+                        <h2>Análisis Táctico On-Demand</h2>
+                        <p>Ejecuta la IA para obtener recomendaciones de mercado u órdenes sobre tu portfolio.</p>
+                    </div>
+                    <div class="tactical-form glass-effect">
+                        <form id="tacticalAnalysisForm">
+                            <div class="form-group">
+                                <label>Tipo de Activo</label>
+                                <select name="tipo_activo" id="tipoActivo">
+                                    <option value="acciones">Acciones</option>
+                                    <option value="cedears">CEDEARs</option>
+                                    <option value="bonos">Bonos</option>
+                                    <option value="opciones">Opciones</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Moneda</label>
+                                <select name="moneda" id="moneda">
+                                    <option value="Pesos">Pesos (ARS)</option>
+                                    <option value="Dólares">Dólares (USD)</option>
+                                    <option value="Dólares CCL">Dólares CCL</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Liquidación</label>
+                                <select name="liquidacion" id="liquidacion">
+                                    <option value="48hs">48hs</option>
+                                    <option value="24hs">24hs</option>
+                                    <option value="CI">Contado Inmediato (CI)</option>
+                                </select>
+                            </div>
+                            <div class="form-group full-width">
+                                <label>Tickers Específicos (opcional, sep. comas)</label>
+                                <input type="text" name="tickers" placeholder="Ej: GGAL, YPFD, PAMP...">
+                            </div>
+                            <div class="form-actions full-width">
+                                <button type="submit" class="btn-primary" id="btnRunTactical">
+                                    Ejecutar Análisis
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Result Area -->
+                    <div id="tacticalResultArea" class="tactical-results mt-4" style="display: none;">
+                        <h3>Resultados del Análisis</h2>
+                        <div id="loadingTactical" class="text-center" style="display: none; padding: 2rem;">
+                            <div class="spinner"></div>
+                            <p>Gemini procesando mercado... esto puede tardar unos minutos.</p>
+                        </div>
+                        <div id="tacticalResponseContent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scrapers View -->
+            <div id="view-scrapers" class="view" style="display: none;">
+                <div class="cards-grid">
+                    <div class="metric-card glass-effect column-flex">
+                        <h3>Scraper: Acciones</h3>
+                        <p class="text-xs mb-2">Fuerza la actualización de precios de BullMarket.</p>
+                        <button class="btn-secondary" onclick="runScraper('acciones')">Correr Ahora</button>
+                    </div>
+                    <div class="metric-card glass-effect column-flex">
+                        <h3>Scraper: CEDEARs</h3>
+                        <p class="text-xs mb-2">Fuerza la actualización de datos.</p>
+                        <button class="btn-secondary" onclick="runScraper('cedears')">Correr Ahora</button>
+                    </div>
+                    <div class="metric-card glass-effect column-flex">
+                        <h3>Scraper: Bonos</h3>
+                        <p class="text-xs mb-2">Fuerza la actualización de datos.</p>
+                        <button class="btn-secondary" onclick="runScraper('bonos')">Correr Ahora</button>
+                    </div>
+                    <div class="metric-card glass-effect column-flex">
+                        <h3>Scraper: Opciones</h3>
+                        <p class="text-xs mb-2">Fuerza la actualización de datos.</p>
+                        <button class="btn-secondary" onclick="runScraper('opciones')">Correr Ahora</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- OTP Input Modal Overlay (Hidden by default, shown via JS) -->
+    <div class="modal-overlay" id="otpModalOverlay" style="display: none;">
+        <div class="modal-content glass-effect">
+            <h2>⚠️ Requiere Verificación 2FA</h2>
+            <p>Se ha detectado un requerimiento de OTP. Por favor ingresa el código numérico para continuar el scraping.</p>
+            <div class="form-group mt-2">
+                <input type="text" id="otpValueInput" placeholder="000000" maxlength="6" class="text-center text-xl tracking-wide">
+            </div>
+            <p id="otpErrorMsg" class="error-text" style="display: none;"></p>
+            <div class="modal-actions">
+                <button class="btn-primary" onclick="submitOtpCode()">Enviar Código OTP</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
